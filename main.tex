@@ -2,6 +2,7 @@
 
 
 \usepackage{graphicx} % Required for inserting images
+\usepackage{siunitx}
 \usepackage{biblatex} %Imports biblatex package
 \usepackage{booktabs} % Required for tables
 \usepackage{longtable}
@@ -18,6 +19,9 @@
 
 \begin{document}
 
+\begin{abstract}
+    Hello world!
+\end{abstract}
 
 
 \section{Introduction}
@@ -31,8 +35,8 @@ Researchers have previously assumed that the contribution of pumping to increasi
 
 \begin{figure}[H]
 \centering
-\includegraphics{figurer/figure_design.pdf}
-\caption{Strategy selection for reinforcement learning (red) and supervised (free choice) learning (blue) during acquisition.}\label{fig: design}
+\includegraphics{figurer/figure_design_2.pdf}
+\caption{Illustration of the setup, experimental design and procedure. \textbf{a}. Illustration of the task and performance measures used in the study. The skiers' task was to ski faster in the slalom course than in straight gliding, which was also the measure used in our study. \textbf{b}. Illustration of the pumping technique. Skiers can achieve the pumping effect by extending their center of mass closer to the rotation axis of the turn (from the black to the pink line). \textbf{c}. Illustration of the original experiment and procedure. The data analyzed in this study are from course B and are highlighted in blue. We analyzed only baseline and retention data but showed the acquisition sessions to provide a complete illustration of the training intervention. \textbf{d}. Illustration of the course profile and the two analyzed sequences. \textbf{e}. Illustration of the three courses used in the original study and the setup of the local positioning system. We have only analyzed data from course B (the middle), which is marked in blue.}\label{fig: design}
 \end{figure}
 
 
@@ -61,20 +65,21 @@ After the three acquisition sessions (days 2, 3, and 4), the skiers had a break 
 
 
 \subsection{Analysis}
-The cleaning and processing of the data began with custom functions in MATLAB, which were developed, tested, and utilized in previous studies \cite{reidKinematicKineticStudy2010}. Subsequently, the files were imported into Python using the \cite{2020SciPy-NMeth} and pandas \cite{reback2020pandas} packages. During this import, some runs caused import problems in Python because they were not part of the experimental protocol (warm-up runs or freeski runs).
-Additionally, in a few cases, the quality of the local positioning signal was deficient, preventing the calculations in MATLAB from proceeding. In both error cases, we manually removed the runs from the MATLAB file. After this processing step, the remaining data underwent two manual screening processes to verify the quality of the local positioning data. The first screening process involved removing all runs that did not match the experimental procedure, such as warm-up runs or runs where a Did Not Finish (DNF) was recorded. In the second screening process, all runs were visually inspected to identify errors in the local positioning data. To aid in this detection, the section time performance, coordinates, and velocity for all ski racers were plotted. All removed runs, along with the reasons for their removal, are documented in document A. Finally, the data that passed the screening process was saved as a .csv file. An extensive report of this cleaning and validation process can be found at OSF  (\url{https://osf.io/2jxgk}).
+The cleaning and processing of the data began with custom functions in MATLAB, which were developed, tested, and utilized in previous studies \cite{reidKinematicKineticStudy2010}. Subsequently, the files were imported into Python using the \cite{2020SciPy-NMeth} and pandas \cite{reback2020pandas} packages. During this import, some runs caused import problems in Python because they were not part of the experimental protocol (warm-up runs or freeski runs). Additionally, in a few cases, the quality of the local positioning signal was deficient, preventing the calculations in MATLAB from proceeding. In both error cases, we manually removed the runs from the MATLAB file. After this processing step, the remaining data underwent two manual screening processes to verify the quality of the local positioning data. The first screening process involved removing all runs that did not match the experimental procedure, such as warm-up runs or runs where a Did Not Finish (DNF) was recorded. In the second screening process, all runs were visually inspected to identify errors in the local positioning data. To aid in this detection, the section time performance, coordinates, and velocity for all ski racers were plotted. All removed runs, along with the reasons for their removal, are documented in document A. Finally, the data that passed the screening process was saved as a .csv file. An extensive report of this cleaning and validation process can be found at OSF  (\url{https://osf.io/2jxgk}).
 
-Our general statistical approach was to leverage multilevel modeling due to the hierarchical data structure of our data. This structure stemmed from two sources: repeated observations in each slalom course on baseline and retention, and the nesting of skiers within different ski academies that conducted the learning experiment together. We employed a Bayesian estimation approach as our goal was to describe the change and its effects rather than testing \cite{kruschke_bayesian_2018}. To fit the model, we used the brms \cite{burkner_brms_2017} package in R \cite{r_core_team_r_2022}. To extract and visualize draws from the model we used Tidybayes package \cite{kay_tidybayes_nodate}. 
+Our general statistical approach was to leverage multilevel modeling due to the hierarchical data structure of our data. This structure stemmed from two sources: repeated observations in each slalom course on baseline and retention, and the nesting of skiers within different ski academies that conducted the learning experiment together. We employed a Bayesian estimation approach as our goal was to describe the change and its effects rather than testing \cite{kruschke_bayesian_2018}. To fit the models, we used the brms \cite{burkner_brms_2017} package in R \cite{r_core_team_r_2022}. To extract and visualize draws from the model we used Tidybayes package \cite{kay_tidybayes_nodate}. 
 
-With the exception of one model, we employed multilevel Generalized Additive Models (GAMs) for all our analyses. GAMs model the global trend using smooth functions composed of several simple basis functions, each with an estimated coefficient derived from the data. The estimated relationship between the predictor and the response is obtained by summing up the coefficients of the total number of basis functions supported by the data. Adding many basis functions allows for modeling more complex shapes but may lead to overfitting the data. However, the GAM framework counteracts this issue of overly complex models by penalizing the coefficients of the basis functions, effectively negotiating the tradeoff between wiggly functions and generalizability.
-
+ With the exception of one model, we employed multilevel generalized additive models (GAMs) \cite{pedersen_hierarchical_2019} for all our analyses. The reason for this choice is that GAMs allow greater flexibility in modeling nonlinear shapes in data, such as velocity and acceleration. In general, a GAM model takes the form of $Y \sim \beta_0 + S(x)$, where $\beta_0$ represents an intercept term, and $S(x)$ is a smooth function of the predictor $x$. Each smooth function is composed of several simple basis functions (K), each with an estimated coefficient derived from the data. Adding many basis functions (K) allows for modeling more complex shapes but may run the risk of overfitting the data. This risk is handled in the GAM framework, which counteracts the issue of overly complex models by penalizing the coefficients of the basis functions, effectively negotiating the tradeoff between wiggly functions and generalizability.
 
 \subsection{Race times}
 To analyze the race times, we conducted two statistical analyses. In the first model, we examined the time it took from the start to the first intermediate time, which was positioned just after the finish of the LPS section (Fig. \ref{fig: design}d). In this model, we predicted Race time (measured as time behind straight gliding in the respective session), with Session (baseline, retention) as fixed effect, and a random intercept and slope for skiers. Due to the limited number of levels in the ski group, we were unable to achieve model convergence with ski group as a varying intercept or slope. We used an index coding approach for both analyses, which uses integers (1, 2, ..., n) to code categorical variable levels. The advantage of this approach over traditional treatment coding is that it avoids placing more equal uncertainty on all levels of that variable as opposed to treatment coding, which assigns more uncertainty to all levels other than the reference group. With the Bayesian modeling approach, it is also easier to set sensible priors \cite{mcelreath_statistical_2018}. 
 
-For the second model, we used position data from the local positioning system (LPS). These data were normalized to ensure an equal number of data points between the gates in the sequence. To model the race times, we employed the difference between the time in the course and the time straight down for the entire sequence. We modeled this difference with a multilevel generalized additive model (GAM) as a global smooth plus group-level smoothers (random smooth) for each skier \cite{pedersen_hierarchical_2019}. We opted for group-level smoothers because we know that kinematic data can vary significantly between skiers.
+For the second model, we used position data from the local positioning system (LPS). These data were normalized to ensure an equal number of data points between the gates in the sequence. To model the race times, we employed the difference between the time in the course and the time straight down for the entire sequence. We modeled this difference with a multilevel generalized additive model (GAM) as a global smooth plus group-level smoothers (random smooth) for each skier \cite{pedersen_hierarchical_2019}. We opted for group-level smoothers because we know that kinematic data can vary significantly between skiers. We chose to report the global mean (that is, setting the random effects to zero when making posterior predictions). 
 
+\subsection{Velocity}
+To calculate the resultant velocity of the three velocity vectors, we applied the Pythagorean theorem to the X, Y, and Z vector components. Since the local positioning system only provides data for the X and Y axes, we measured the terrain incline (Z) by taking point measurements every ten meters (at each gate) and interpolated values between these points using a tachymeter. To model race times, we utilized the difference between the velocity along the course and the velocity directly downward during the local positioning section. To model this difference, we used multilevel generalized additive model (GAM), incorporating a global smooth function along with group-level smoothers (random smooths) for each each skier \cite{pedersen_hierarchical_2019}. Group-level smoothers were chosen due to the significant variability in kinematic data observed among skiers.
 
+ 
 
 \section{Results}
 
@@ -86,20 +91,41 @@ We analyzed the skiers' race time from the section's start to its end (intermedi
 \begin{figure}[H]
 \centering
 \includegraphics{figurer/figure_racetime_2.pdf}
-\caption{Strategy selection for reinforcement learning (red) and supervised (free choice) learning (blue) during acquisition.}\label{fig: choice_estimated}
+\caption{Race times for both the intermediate time section and the local positioning system (LPS) section are depicted. \textbf{a}. Estimated race times during baseline and retention for the intermediate time section. \textbf{b}. Estimated differences (contrast) between baseline and retention for the intermediate time section. \textbf{c}. Estimated race times during baseline and retention for the LPS section. \textbf{d}. Estimated differences (contrast) between baseline and retention for the LPS section. The black lines denote the expected mean or differences in mean, with the shaded area representing their 95\% credible interval (CI). Each gray point or line represents one run trial by a skier.}\label{fig: racetimes}
 \end{figure}
 
 \subsection{Velocity}
 We chose to study the kinematic changes among the skiers in this section, as we observed time differences between baseline and retention. If the skiers' extension motion towards the axis of rotation of the turn increases velocity, we would expect an increased velocity close or immediately after the turn. Figure \ref{fig: velocity}a depicts the velocity profiles for the section with the local positioning system (LPS) at baseline and retention.  
 
 Before the intervention (baseline), the skiers' velocity decreased on average by -0.14 (95\% CI [-0.36, 0.09]) from gate 1 to 4 in the sequence. After the training intervention, skiers increased their entry velocity into the section by an average of 0.24 m/s (95\% CI [0.19, 0.29]) compared to the velocity during the baseline. The velocity continued to increase through the sequence, rising on average by 0.16 m/s (95\% CI [0.10, 0.21]) from gate 1 to gate 4. Not only did the skiers increase their velocity throughout the section—almost incrementally from gate to gate—but the velocity profile also underwent a change with significantly more waveforms. In general, the pattern of these waveforms was that skiers increased their velocity after gate passage and continued to rise until the skier was between two gates. After that, the velocity decreased to gate passage before it rose again. 
+\begin{figure}[H]
+\centering
+\includegraphics{figurer/figure_velocity_2.pdf}
+\caption{Strategy selection for reinforcement learning (red) and supervised (free choice) learning (blue) during acquisition.}\label{fig: choice_estimated}
+\end{figure}
 
-Selv om vi ikke kan si noe sikkert kan det se ut som at skikjørerende pumpet seg opp i høyere hastighet gjennom sekvensen
+\subsection{Acceleration}
+We continued examining acceleration through the turn to analyze the velocity changes more closely. As shown in Fig. \ref{fig: acc}a, the acceleration exhibited fluctuating waves, with skiers increasing their acceleration up to about the switch between two turns that began just before or around the gate passage. After this switch, the skiers decelerated until just before the gate. 
+
+During the baseline, we found that the skiers' acceleration decreased on average by -0.91 m/s$^2$ (95\% CI [-1.71, -0.05]) from gate 1 to gate 2, followed by an increase of 0.42 m/s$^2$ (95\% CI [-0.40, 1.31]) from gate 2 to gate 3 and then a marginal increase of 0.01 m/s$^2$ (95\% CI [-0.84, 0.79]) again from gate 3 to gate 4.
+
+Following the intervention, the skiers developed a significantly more undulating acceleration profile with higher peaks and lower troughs compared to the baseline. Our gate-to-gate analysis, however, revealed that acceleration was lower at gate 1 by -0.53  m/s$^2$ (95\% CI [-0.66, -0.41]), at gate 2 by -0.19  m/s$^2$ (95\% CI [-0.26, -0.13]), at gate 3 by -0.48  m/s$^2$ (95\% CI [-0.54, -0.42]), and at gate 4 by -0.42  m/s$^2$  (95\% CI [-0.48, -0.36]). 
 
 
 
 
 
+
+
+
+
+
+Etter intervensjonen vant vi at skikjørerende hadde en utviklet en betydelig mer bølgete akselerasjonsprofil med høyere topp og lavere topper enn i baseline. Gate til gate analysen viste riktignok at akselerasjonen var -0.53  m/s$^2$ (95\% CI [-0.66  -0.41]) lavere ved gate 1,  -0.19  (95\% CI [-0.26, -0.13]) ved port 2, -0.48 (95\% CI [-0.54  -0.42]) ved port 3 og  -0.42 (95\% CI [(-0.48, -0.36]) ved port 4. 
+
+(-0.54  -0.42)
+
+
+-0.53 (-0.66  -0.41) port 1, -0.19  (-0.26  -0.13) port 2, -0.48  (-0.54  -0.42) ved port 3, og -0.42  (-0.48,-0.36) ved port 4. 
 
 
 
@@ -107,7 +133,7 @@ Selv om vi ikke kan si noe sikkert kan det se ut som at skikjørerende pumpet se
 \begin{figure}[H]
 \centering
 \includegraphics{figurer/figure_acc.pdf}
-\caption{Strategy selection for reinforcement learning (red) and supervised (free choice) learning (blue) during acquisition.}\label{fig: choice_estimated}
+\caption{Strategy selection for reinforcement learning (red) and supervised (free choice) learning (blue) during acquisition.}\label{fig: acc}
 \end{figure}
 
 
@@ -139,35 +165,24 @@ Selv om vi ikke kan si noe sikkert kan det se ut som at skikjørerende pumpet se
 
 
 
+%We chose to study the kinematic changes among the skiers in this section, as we observed time differences between baseline and retention. Om skikjørernes strekkbevegelse mot svingens axis of rotation fra lateralt innoverlent posisjon øker hastigheten vil vi forvente en økt hastighet rett etter svingen. Figure \ref{fig: velocity}a displays the velocity profiles for the LPS section at baseline and retention. During baseline, velocity declined relative to the velocity when straight gliding (From gate 1 to gate 4, the velocity decreased by -0.14 m/s (95\% CI [-0.36, 0.09]).
+
+
+%The third strategy that can potentially make skiers faster on flat slopes in slalom is to 'extend,' also referred to as 'pumping' to increase velocity \cite{lind_physics_2013}. By moving closer to the axis of rotation of a turn from a laterally inclined position, the skier can boost its kinetic rotational energy under certain situations. According to Lind and Sanders \cite{lind_physics_2013} model, the skier achieves this effect by shortening the radius of the axis about which they rotate, which will reduce the moment of inertia and consequently increase the rotational kinetic energy of the system under the assumption that angular momentum is conserved. In their model, the gain in rotational kinetic energy from this motion is proportional to the amount of work the skier does against the centrifugal force; therefore, a larger extension movement will accomplish a greater increase in rotational kinetic energy.
 
 
 
-We chose to study the kinematic changes among the skiers in this section, as we observed time differences between baseline and retention. Om skikjørernes strekkbevegelse mot svingens axis of rotation fra lateralt innoverlent posisjon øker hastigheten vil vi forvente en økt hastighet rett etter svingen. Figure \ref{fig: velocity}a displays the velocity profiles for the LPS section at baseline and retention. During baseline, velocity declined relative to the velocity when straight gliding (From gate 1 to gate 4, the velocity decreased by -0.14 m/s (95\% CI [-0.36, 0.09]).
-
-
-The third strategy that can potentially make skiers faster on flat slopes in slalom is to 'extend,' also referred to as 'pumping' to increase velocity \cite{lind_physics_2013}. By moving closer to the axis of rotation of a turn from a laterally inclined position, the skier can boost its kinetic rotational energy under certain situations. According to Lind and Sanders \cite{lind_physics_2013} model, the skier achieves this effect by shortening the radius of the axis about which they rotate, which will reduce the moment of inertia and consequently increase the rotational kinetic energy of the system under the assumption that angular momentum is conserved. In their model, the gain in rotational kinetic energy from this motion is proportional to the amount of work the skier does against the centrifugal force; therefore, a larger extension movement will accomplish a greater increase in rotational kinetic energy.
+%Vi forventet at skikjørernes forbedrede tider skyltes 
 
 
 
-Vi forventet at skikjørernes forbedrede tider skyltes 
+%A key explanation behind the improvement in skiers through the LPS-section was that they pumped themselves to higher velocities. Consistent with pumping contributing to a velocity increase after its execution, we predicted that a large velocity increase around the gate passage, caused by the intervention.
 
+%Figure \ref{fig: velocity}a displays the velocity profiles for the LPS section at baseline and retention. During baseline, velocity declined relative to the velocity when straight gliding (From gate 1 to gate 4, the velocity decreased by -0.14 m/s (95\% CI [-0.36, 0.09]).
 
+%After the intervention, we observed a large change in the velocity profile (Figure \ref{fig: velocity}b). We found that skiers had a higher entry velocity at retention. The expected average difference was 0.24 (95\% CI [0.19, 0.29]) at the first gate in the section. However, we also identified a global trend indicating that skiers continued to increase their velocity throughout the section. The expected difference in increase from gate 1 to gate 4 was 0.16 m/s (95\% CI [0.10, 0.21]).
 
-A key explanation behind the improvement in skiers through the LPS-section was that they pumped themselves to higher velocities. Consistent with pumping contributing to a velocity increase after its execution, we predicted that a large velocity increase around the gate passage, caused by the intervention.
-
-Figure \ref{fig: velocity}a displays the velocity profiles for the LPS section at baseline and retention. During baseline, velocity declined relative to the velocity when straight gliding (From gate 1 to gate 4, the velocity decreased by -0.14 m/s (95\% CI [-0.36, 0.09]).
-
-After the intervention, we observed a large change in the velocity profile (Figure \ref{fig: velocity}b). We found that skiers had a higher entry velocity at retention. The expected average difference was 0.24 (95\% CI [0.19, 0.29]) at the first gate in the section. However, we also identified a global trend indicating that skiers continued to increase their velocity throughout the section. The expected difference in increase from gate 1 to gate 4 was 0.16 m/s (95\% CI [0.10, 0.21]).
-
-Den tydeligste endringen var likevel rett etter porten. Etter intervensjonen var hastighetsprofilen betydelig mer bølgeformet med store. Den forventede økningen mellom
-
-
-\begin{figure}[H]
-\centering
-\includegraphics{figurer/figure_velocity_2.pdf}
-\caption{Strategy selection for reinforcement learning (red) and supervised (free choice) learning (blue) during acquisition.}\label{fig: velocity}
-\end{figure}
-
+%Den tydeligste endringen var likevel rett etter porten. Etter intervensjonen var hastighetsprofilen betydelig mer bølgeformet med store. Den forventede økningen mellom
 
 
 
