@@ -71,12 +71,12 @@ Our general statistical approach was to leverage multilevel modeling due to the 
 
  With the exception of one model, we employed multilevel generalized additive models (GAMs) \cite{pedersen_hierarchical_2019} for all our analyses. The reason for this choice is that GAMs allow greater flexibility in modeling nonlinear shapes in data, such as velocity and acceleration. In general, a GAM model takes the form of $Y \sim \beta_0 + S(x)$, where $\beta_0$ represents an intercept term, and $S(x)$ is a smooth function of the predictor $x$. Each smooth function is composed of several simple basis functions (K), each with an estimated coefficient derived from the data. Adding many basis functions (K) allows for modeling more complex shapes but may run the risk of overfitting the data. This risk is handled in the GAM framework, which counteracts the issue of overly complex models by penalizing the coefficients of the basis functions, effectively negotiating the tradeoff between wiggly functions and generalizability.
 
-\subsection{Race times}
+\subsubsection{Race times}
 To analyze the race times, we conducted two statistical analyses. In the first model, we examined the time it took from the start to the first intermediate time, which was positioned just after the finish of the LPS section (Fig. \ref{fig: design}d). In this model, we predicted Race time (measured as time behind straight gliding in the respective session), with Session (baseline, retention) as fixed effect, and a random intercept and slope for skiers. Due to the limited number of levels in the ski group, we were unable to achieve model convergence with ski group as a varying intercept or slope. We used an index coding approach for both analyses, which uses integers (1, 2, ..., n) to code categorical variable levels. The advantage of this approach over traditional treatment coding is that it avoids placing more equal uncertainty on all levels of that variable as opposed to treatment coding, which assigns more uncertainty to all levels other than the reference group. With the Bayesian modeling approach, it is also easier to set sensible priors \cite{mcelreath_statistical_2018}. 
 
 For the second model, we used position data from the local positioning system (LPS). These data were normalized to ensure an equal number of data points between the gates in the sequence. To model the race times, we employed the difference between the time in the course and the time straight down for the entire sequence. We modeled this difference with a multilevel generalized additive model (GAM) as a global smooth plus group-level smoothers (random smooth) for each skier \cite{pedersen_hierarchical_2019}. We opted for group-level smoothers because we know that kinematic data can vary significantly between skiers. We chose to report the global mean (that is, setting the random effects to zero when making posterior predictions). 
 
-\subsection{Velocity}
+\subsubsection{Velocity}
 To calculate the resultant velocity of the three velocity vectors, we applied the Pythagorean theorem to the X, Y, and Z vector components. Since the local positioning system only provides data for the X and Y axes, we measured the terrain incline (Z) by taking point measurements every ten meters (at each gate) and interpolated values between these points using a tachymeter. To model race times, we utilized the difference between the velocity along the course and the velocity directly downward during the local positioning section. To model this difference, we used multilevel generalized additive model (GAM), incorporating a global smooth function along with group-level smoothers (random smooths) for each each skier \cite{pedersen_hierarchical_2019}. Group-level smoothers were chosen due to the significant variability in kinematic data observed among skiers.
 
  
@@ -86,7 +86,7 @@ To calculate the resultant velocity of the three velocity vectors, we applied th
 
 
 \subsection{Race time}
-We analyzed the skiers' race time from the section's start to its end (intermediate split) and the race time in the section covered by the local position system (LPS section). This analysis aimed to ensure that the skiers also improved in the top section of the slalom course, providing a basis for further kinematic analysis to explain this improvement. Our analysis revealed that, on average, the skiers improved their race time by -0.17 sec. (95\% Credible intervals (CI)[-0.33, 0.01]) from the baseline to the retention session on the entire section. Zooming into the LPS section, we found that, on average, the skiers improved their race time by -0.1 sec. (95\% CI[-0.1, -0.09]). Thus, we identified this section as important for further analysis. Fig. \ref{fig: choice_estimated} shows the estimated race times for baseline and retention and their differences for the two analyzed sections. 
+We analyzed the skiers' race time from the section's start to its end (intermediate split section) and the race time in the section covered by the local position system (local positioning section). We performed this analysis to ensure that the skiers also improved in the top section of the slalom course so that we had a basis for further kinematic analyses to explain this improvement. Our analysis revealed that the skiers on average improved their race time by -0.17 sec. (95\% CI[-0.33, 0.01]) from the baseline to the retention session on the entire section. Zooming into the LPS section, we found that the skiers on average improved their race time by -0.1 sec. (95\% CI[-0.1, -0.09]). Therefore, we provided evidence that this section was instrumental for skiers’ overall improvement in race time and as a basis for further kinematic analysis. Fig. \ref{fig: choice_estimated} shows the estimated race times for baseline and retention and their differences for the two analyzed sections. 
 
 \begin{figure}[H]
 \centering
@@ -95,48 +95,38 @@ We analyzed the skiers' race time from the section's start to its end (intermedi
 \end{figure}
 
 \subsection{Velocity}
-We chose to study the kinematic changes among the skiers in this section, as we observed time differences between baseline and retention. If the skiers' extension motion towards the axis of rotation of the turn increases velocity, we would expect an increased velocity close or immediately after the turn. Figure \ref{fig: velocity}a depicts the velocity profiles for the section with the local positioning system (LPS) at baseline and retention.  
+We found that the skiers improved their race times in both the intermediate split and the local positioning sections, which gave us motivation to continue studying the kinematic changes among skiers in the local positioning sequence. If the skiers' race times improvement can be attributed to the pumping mechanism, we would expect skiers to increase their velocity around or immediately after gate passage, at the time when the extension movement occurs. Figure \ref{fig: velocity}a shows the velocity profiles for the local positioning system (LPS) section during baseline and retention. We first describe the global velocity trend during baseline and then the contrast between baseline and retention. 
 
-Before the intervention (baseline), the skiers' velocity decreased on average by -0.14 (95\% CI [-0.36, 0.09]) from gate 1 to 4 in the sequence. After the training intervention, skiers increased their entry velocity into the section by an average of 0.24 m/s (95\% CI [0.19, 0.29]) compared to the velocity during the baseline. The velocity continued to increase through the sequence, rising on average by 0.16 m/s (95\% CI [0.10, 0.21]) from gate 1 to gate 4. Not only did the skiers increase their velocity throughout the section—almost incrementally from gate to gate—but the velocity profile also underwent a change with significantly more waveforms. In general, the pattern of these waveforms was that skiers increased their velocity after gate passage and continued to rise until the skier was between two gates. After that, the velocity decreased to gate passage before it rose again. 
+Before the intervention (baseline), skiers experienced a decrease in velocity from gate to gate in the local positioning sequence compared to their velocity during straight gliding. With the exception of a slight velocity increase of 0.05 m/s (95\% CI [-0.08, 0.17]) from gate 1 to gate 2, the velocities decreased on average by -0.06 m/s (95\% CI [-0.19, 0.07]) from gate 2 to gate 3 and by -0.12 m/s (95\% CI [-0.25, 0]) from gate 3 to gate 4 compared to straight gliding times. This comparison was chosen because the gate marks a fixed reference point.
+
+After the training intervention, skiers increased their entry velocity into the local positioning section (gate 1) by an average of 0.24 m/s (95\% CI [0.19, 0.29]) compared to the baseline velocity. Furthermore, skiers increased their velocity on average by 0.07 m/s (95\% CI [0.01, 0.12]) from gate 1 to gate 2, followed by a slight decrease of -0.02 m/s (95\% CI [-0.05, 0.02]) from gate 2 to gate 3. Subsequently, the velocity of the skiers increased again by 0.1 m/s (95\% CI [0.06, 0.14]). Therefore, the velocity of the skiers increased incrementally from gate to gate. However, the velocity profiles appeared more wavy, as depicted in Fig. \ref{fig: velocity}b. In general, the pattern of these waveforms was that skiers increased their velocity after gate passage and continued to rise until the skier was between two gates. After that, the velocity decreased to gate passage before it rose again. 
+
 \begin{figure}[H]
 \centering
 \includegraphics{figurer/figure_velocity_2.pdf}
-\caption{Strategy selection for reinforcement learning (red) and supervised (free choice) learning (blue) during acquisition.}\label{fig: choice_estimated}
+\caption{Kommer}\label{fig: velocity}
 \end{figure}
 
 \subsection{Acceleration}
 We continued examining acceleration through the turn to analyze the velocity changes more closely. As shown in Fig. \ref{fig: acc}a, the acceleration exhibited fluctuating waves, with skiers increasing their acceleration up to about the switch between two turns that began just before or around the gate passage. After this switch, the skiers decelerated until just before the gate. 
 
-During the baseline, we found that the skiers' acceleration decreased on average by -0.91 m/s$^2$ (95\% CI [-1.71, -0.05]) from gate 1 to gate 2, followed by an increase of 0.42 m/s$^2$ (95\% CI [-0.40, 1.31]) from gate 2 to gate 3 and then a marginal increase of 0.01 m/s$^2$ (95\% CI [-0.84, 0.79]) again from gate 3 to gate 4.
+During the baseline, we found that the skiers' acceleration decreased on average by -0.91 m/s$^2$ (95\% CI [-1.71, -0.05]) from gate 1 to gate 2, followed by an increase of 0.42 m/s$^2$ (95\% CI [-0.40, 1.31]) from gate 2 to gate 3 and then a marginal increase of 0.01 m/s$^2$ (95\% CI [-0.84, 0.79]) again from gate 3 to gate 4, compared to the acceleration during straight gliding.
 
-Following the intervention, the skiers developed a significantly more undulating acceleration profile with higher peaks and lower troughs compared to the baseline. Our gate-to-gate analysis, however, revealed that acceleration was lower at gate 1 by -0.53  m/s$^2$ (95\% CI [-0.66, -0.41]), at gate 2 by -0.19  m/s$^2$ (95\% CI [-0.26, -0.13]), at gate 3 by -0.48  m/s$^2$ (95\% CI [-0.54, -0.42]), and at gate 4 by -0.42  m/s$^2$  (95\% CI [-0.48, -0.36]). 
+Following the intervention, the skiers developed a significantly more undulating acceleration profile with higher peaks and lower troughs compared to the baseline. We performed a gate-to-gate analysis, which revealed that acceleration was lower at gate 1 by -0.53  m/s$^2$ (95\% CI [-0.66, -0.41]), at gate 2 by -0.19  m/s$^2$ (95\% CI [-0.26, -0.13]), at gate 3 by -0.48  m/s$^2$ (95\% CI [-0.54, -0.42]), and at gate 4 by -0.42  m/s$^2$  (95\% CI [-0.48, -0.36]) compared to the baseline. 
 
-
-
-
-
-
-
-
-
-
-Etter intervensjonen vant vi at skikjørerende hadde en utviklet en betydelig mer bølgete akselerasjonsprofil med høyere topp og lavere topper enn i baseline. Gate til gate analysen viste riktignok at akselerasjonen var -0.53  m/s$^2$ (95\% CI [-0.66  -0.41]) lavere ved gate 1,  -0.19  (95\% CI [-0.26, -0.13]) ved port 2, -0.48 (95\% CI [-0.54  -0.42]) ved port 3 og  -0.42 (95\% CI [(-0.48, -0.36]) ved port 4. 
-
-(-0.54  -0.42)
-
-
--0.53 (-0.66  -0.41) port 1, -0.19  (-0.26  -0.13) port 2, -0.48  (-0.54  -0.42) ved port 3, og -0.42  (-0.48,-0.36) ved port 4. 
-
-
+To better understand how the acceleration changed between baseline and retention in each turn, we computed the accumulated acceleration from gate to gate through the local positioning sequence. From the model, we found that the estimated difference in accumulated acceleration was 24.4 (95\% CI [-14.4, 63.1]) from slalom gate 1 to slalom gate 2, 1.65 (95\% CI [-37.6, 40.1]) between gate 2 and gate 2, 39.4 (95\% CI [0.59, 78.1]) from gate 3 to gate 4, and 107.0 (95\% CI [68.8, 146.0]) from gate 4 to the end of the sequence. Therefore, the skiers appears to have had a positive overall acceleration in most of the gates in the sequence. Fig. \ref{fig: accaccum} shows the total acceleration during each gate in the local positioning sequence.
+\begin{figure}[H]
+\centering
+\includegraphics{figurer/figure_acc.pdf}
+\caption{Kommer.}\label{fig: acc}
+\end{figure}
 
 
 \begin{figure}[H]
 \centering
-\includegraphics{figurer/figure_acc.pdf}
-\caption{Strategy selection for reinforcement learning (red) and supervised (free choice) learning (blue) during acquisition.}\label{fig: acc}
+\includegraphics{figurer/figure_acc_acc.pdf}
+\caption{Kommer.}\label{fig: accaccum}
 \end{figure}
-
-
 
 
 
