@@ -28,7 +28,7 @@
 \maketitle
 
 \begin{abstract}
-Slalom racers rely on effective strategies to bring them down the course in the shortest amount of time possible. One proposed strategy that skiers can use to achieve this goal is to pump themselves to higher velocities by extending their center of mass closer to the turn's axis of rotation from a laterally tilted position during the turn. However, the effectiveness of this proposed strategy and its potential magnitude are much debated. In a previous study, we found that skilled skiers (n=66) greatly improved their race times after training to pump on flats in slaloms. Here, we ran a follow-up study and explored the kinematic changes that may explain this improvement in a smaller sample (n=18) of this larger pool of skiers, where we recorded the positions of the skiers using a local positioning system in the upper section of the course. Using a Bayesian modeling approach, we found that the velocity and acceleration profiles of the skiers changed greatly, with a change pattern consistent with what we would expect from pumping. We found little evidence that the total path length changed, however. Pumping to increase velocity on flats thus appears to be an important strategy for increasing velocity on flats.
+Slalom racers rely on effective strategies to bring them down the course in the shortest amount of time possible. One proposed strategy that skiers can use to achieve this goal is to pump themselves to higher velocities by extending their center of mass closer to the turn's axis of rotation from a laterally tilted position during the turn. However, the effectiveness of this proposed strategy and its potential magnitude are much debated. In a previous study, we found that skilled skiers (n=66) greatly improved their race times after training to pump on flats in slalom. Here, we ran a follow-up study and explored the kinematic changes that may explain this improvement in a smaller sample (n=18) of this larger pool of skiers, where we recorded the positions of the skiers using a local positioning system in the upper section of the course. Using a Bayesian estimation approach, we found that the velocity and acceleration profiles of the skiers changed greatly, with a change pattern consistent with what we would expect from pumping. We found little evidence that the total path length changed, however. Pumping to increase velocity on flats thus appears to be an important strategy for increasing velocity on flats.
     
 \end{abstract}
 
@@ -47,7 +47,7 @@ In two recent experiments, we have also provided evidence that skilled skiers ca
 
 \begin{figure}[H]
 \centering
-\includegraphics{figurer/figure_design_2.pdf}
+\includegraphics{figurer/figure_design_3.pdf}
 \caption{Illustration of the setup, experimental design and procedure. \textbf{a}. Illustration of the task and performance measures used in the study. The skiers' task was to ski faster in the slalom course than in straight gliding, which was also the measure used in our study. \textbf{b}. Illustration of the pumping technique. Skiers can achieve the pumping effect by extending their center of mass closer to the rotation axis of the turn (from the black to the pink line). \textbf{c}. Illustration of the original experiment and procedure. The data analyzed in this study are from course B and are highlighted in blue. We analyzed only baseline and retention data but showed the acquisition sessions to provide a complete illustration of the training intervention. \textbf{d}. Illustration of the course profile and the two analyzed sequences. \textbf{e}. Illustration of the three courses used in the original study and the setup of the local positioning system. We have only analyzed data from course B (the middle), which is marked in blue.}\label{fig: design}
 \end{figure}
 
@@ -63,7 +63,7 @@ The experiment took place on a 250-meter-long flat section of the race hill at t
 
 We used a standardized starting procedure to minimize variation in entry speed. That is, the skiers started 20 meters before the first gate from a stationary position with the forebinding placed behind the start gate. Upon receiving clearance to start, skiers lifted their poles from the snow and skied straight down 10 meters from the hill until crossing the first photocell, which started the timer. Subsequently, skiers continued down the course. For the purposes of this study, a trial concluded when skiers crossed the second intermediate split (Fig. \ref{fig: design}d), although they continued skiing the rest of the course. The race time data were recorded using a wireless photocell timing system (HC Timing wiNode and wiTimer; Oslo, Norway).
 
-In addition to the timing system for recording times, we used a local positioning system (LPS) to record the skiers' positions as they navigated the course section. Initially, the LPS covered the area just before the first photocell and right before the second intermediate split. However, due to the narrowness of the ski hall in the upper part of the course, the wall encroached too closely on the nodes, impeding signal reception until the skiers descended further down where the hall widened. Consequently, we only have data from the local positioning system for a smaller section of the course. In Appendix A, we elaborate on this challenge in more detail. For the setup of the local positioning system, we deployed three nodes on each side of the hall (Fig. \ref{fig: design}d and e). One node served as the master node and was positioned on the skier's right side of the course. The LPS provided positional data as skiers descended through the course section (sampling frequency \~16Hz), enabling us to compute their velocity, acceleration, and path length.
+In addition to the timing system for recording times, we used a local positioning system (LPS) to record the skiers' positions as they navigated the course section. Initially, the LPS covered the area just before the first photocell and right before the second intermediate split. However, due to the narrowness of the ski hall in the upper part of the course, the wall encroached too closely on the nodes, impeding signal reception until the skiers descended further down where the hall widened. Consequently, we only have data from the local positioning system for a smaller section of the course. In Appendix \ref{appendixc}, we elaborate on this challenge in more detail. For the setup of the local positioning system, we deployed three nodes on each side of the hall (Fig. \ref{fig: design}d and e). One node served as the master node and was positioned on the skier's right side of the course. The LPS provided positional data as skiers descended through the course section (sampling frequency \~16Hz), enabling us to compute their velocity, acceleration, and path length.
 
 \subsection{Design and procedure}
 The original study consisted of a five-day learning experiment with a three-day learning intervention involving pumping (Fig. \ref{fig: design}c). On day 1, the skiers underwent a baseline test comprising a total of 9 runs (3 runs in each course), during which they received instructions solely to ski as quickly as possible down the courses and no timing as feedback. The runs were semirandomized to ensure that no more than two consecutive runs were conducted on the same course. Before and after the 9 runs in the slalom courses, the skiers performed a straight gliding (SG) run, where they descended the section straight down without any turns. Straight gliding (SG) was conducted in an upright, stationary posture to ensure a consistent drag area for each run (Fig.\ref{fig: design}a).
@@ -287,22 +287,27 @@ brm(family = gaussian(),
     control = list(adapt_delta = 0.95))
 \end{verbatim}
 
-Model 6: Total acceleration during baseline and retention in the local positioning section
+Model 6: Total path length during baseline and retention in the local positioning section
 
 \begin{verbatim}
-model_accumpath <- brm(data = d_lps_accum, 
-                       family = gaussian,
-                       formula = path_sum ~ 0 + acc_gate:session + (0 + acc_gate:session | skier),
-                       prior = priors,
-                       control = list(adapt_delta = 0.95),
-                       iter = 4000,
-                       cores= 4,
-                       chains= 4,
-                       seed = 1337,
-                       refresh = 1,
-                       file="model_accumpath2")
+brm(family = gaussian(),
+    formula = pathlength ~ 0 + gate:session + 
+            (0 + gate:session | skier),
+    prior = c(prior(normal(100, 50), class = b), 
+              prior(exponential(1), class = sigma),
+              prior(exponential(1), class = sd)),
+    control = list(adapt_delta = 0.95))
 \end{verbatim}
 
+\section{Challenges with the local positioning system} \label{appendixd}
+Skal vi skrive noe her?
+
+
+\begin{figure}[H]
+\centering
+\includegraphics{figurer/figure_appendix_LPS.jpg}
+\caption{Illustration of the course and the local positioning system setup}\label{fig: coursesetting}
+\end{figure}
 
 
 
