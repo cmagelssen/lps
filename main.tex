@@ -204,9 +204,17 @@ This appendix describes how we set up the slalom courses for data collection. We
 
 
 
-\section{Appendix B title here}\label{appendixb}
-\subsection{Appendix subsection title here}
-\subsection{Appendix subsection  title here}
+\section{Courses and local positioning system} \label{appendixb}
+Skal vi skrive noe her?
+
+
+\begin{figure}[H]
+\centering
+\includegraphics{figurer/figure_appendix_LPS.jpg}
+\caption{Illustration of the course and the local positioning system setup}\label{fig: coursesetting}
+\end{figure}
+
+
 
 
 \section{Details of statistical models}\label{appendixc}
@@ -278,6 +286,23 @@ brm(family = gaussian(),
               prior(exponential(1), class = sd)),
     control = list(adapt_delta = 0.95))
 \end{verbatim}
+
+Model 6: Total acceleration during baseline and retention in the local positioning section
+
+\begin{verbatim}
+model_accumpath <- brm(data = d_lps_accum, 
+                       family = gaussian,
+                       formula = path_sum ~ 0 + acc_gate:session + (0 + acc_gate:session | skier),
+                       prior = priors,
+                       control = list(adapt_delta = 0.95),
+                       iter = 4000,
+                       cores= 4,
+                       chains= 4,
+                       seed = 1337,
+                       refresh = 1,
+                       file="model_accumpath2")
+\end{verbatim}
+
 
 
 
